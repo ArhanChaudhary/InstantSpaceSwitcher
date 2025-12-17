@@ -14,7 +14,8 @@ let package = Package(
             dependencies: [],
             linkerSettings: [
                 .linkedFramework("ApplicationServices"),
-                .linkedFramework("CoreFoundation")
+                .linkedFramework("CoreFoundation"),
+                .linkedFramework("IOKit")
             ]
         ),
         .executableTarget(
@@ -25,6 +26,14 @@ let package = Package(
             name: "ISSCli",
             dependencies: ["ISS"],
             path: "Sources/ISSCli"
+        ),
+        .testTarget(
+            name: "ISSTests",
+            dependencies: ["ISS"]
+        ),
+        .testTarget(
+            name: "ISSCliIntegrationTests",
+            dependencies: ["ISSCli"]
         )
     ]
 )
