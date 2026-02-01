@@ -1,0 +1,36 @@
+name: Nightly Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Create ZIP
+        run: |
+          ditto -c -k --keepParent InstantSpaceSwitcher.app InstantSpaceSwitcher.zip
+
+      - name: Update "Nightly" Release
+        uses: andelf/nightly-release@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: nightly
+          name: "InstantSpaceSwitcher Nightly"
+          prerelease: true
+          body: |
+            Latest automatic build from the main branch. Might be broken.
+          files: |
+            InstantSpaceSwitcher.zip
