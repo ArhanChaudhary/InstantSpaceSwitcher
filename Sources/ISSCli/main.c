@@ -20,17 +20,17 @@ int main(int argc, char **argv) {
 
     if (argc > 1) {
         if (!strcmp(argv[1], "right") || !strcmp(argv[1], "r") || !strcmp(argv[1], "1")) {
-            if (iss_get_space_info(&info) && info.spaceCount > 0) {
+            if (iss_get_space_info(&info)) {
                 if (info.currentIndex + 1 >= info.spaceCount) {
-                    success = iss_switch_to_index(info, 0);
+                    success = iss_switch(ISSDirectionLeft);
                 } else {
                     success = iss_switch(ISSDirectionRight);
                 }
             }
         } else if (!strcmp(argv[1], "left") || !strcmp(argv[1], "l") || !strcmp(argv[1], "0")) {
-            if (iss_get_space_info(&info) && info.spaceCount > 0) {
+            if (iss_get_space_info(&info)) {
                 if (info.currentIndex == 0) {
-                    success = iss_switch_to_index(info, info.spaceCount - 1);
+                    success = iss_switch(ISSDirectionRight);
                 } else {
                     success = iss_switch(ISSDirectionLeft);
                 }
