@@ -431,30 +431,23 @@ bool iss_switch_to_index(unsigned int targetIndex) {
         return false;
     }
 
-    if (targetIndex >= info.spaceCount) {
+    bool outOfBounds = targetIndex >= info.spaceCount;
+    if (outOfBounds) {
         targetIndex = info.spaceCount - 1;
     }
 
     if (info.currentIndex == targetIndex) {
-        return true;
+        return !outOfBounds;
     }
 
     ISSDirection direction = info.currentIndex < targetIndex ? ISSDirectionRight : ISSDirectionLeft;
     unsigned int steps = direction == ISSDirectionRight ? (targetIndex - info.currentIndex) : (info.currentIndex - targetIndex);
 
-    // Post gestures directly without per-step bounds checking since we've validated target
     for (unsigned int i = 0; i < steps; i++) {
         if (!iss_post_switch_gesture(direction)) {
             return false;
         }
-        // Small delay between gestures to let system process them
-        usleep(50000); // 50ms
     }
 
-    // Verify we reached the target
-    if (!iss_get_space_info(&info)) {
-        return false;
-    }
-
-    return info.currentIndex == targetIndex;
+    return !outOfBounds;
 }
