@@ -59,6 +59,6 @@ bool iss_can_move(ISSSpaceInfo info, ISSDirection direction);
  * @param targetIndex Zero-based index for the desired space.
  * @return true if the request succeeded (already on target or switches posted)
  */
-bool iss_switch_to_index(unsigned int targetIndex);
+bool iss_switch_to_index(ISSSpaceInfo info, unsigned int targetIndex);
 
 #endif /* ISS_h */

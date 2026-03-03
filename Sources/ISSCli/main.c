@@ -14,15 +14,27 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    ISSDirection direction = ISSDirectionLeft;
-    bool useIndex = false;
     unsigned int targetIndex = 0;
+    ISSSpaceInfo info;
+    bool success = false;
 
     if (argc > 1) {
         if (!strcmp(argv[1], "right") || !strcmp(argv[1], "r") || !strcmp(argv[1], "1")) {
-            direction = ISSDirectionRight;
+            if (iss_get_space_info(&info) && info.spaceCount > 0) {
+                if (info.currentIndex + 1 >= info.spaceCount) {
+                    success = iss_switch_to_index(info, 0);
+                } else {
+                    success = iss_switch(ISSDirectionRight);
+                }
+            }
         } else if (!strcmp(argv[1], "left") || !strcmp(argv[1], "l") || !strcmp(argv[1], "0")) {
-            direction = ISSDirectionLeft;
+            if (iss_get_space_info(&info) && info.spaceCount > 0) {
+                if (info.currentIndex == 0) {
+                    success = iss_switch_to_index(info, info.spaceCount - 1);
+                } else {
+                    success = iss_switch(ISSDirectionLeft);
+                }
+            }
         } else if (!strcmp(argv[1], "index") || !strcmp(argv[1], "i")) {
             if (argc < 3) {
                 print_usage(argv[0]);
@@ -36,20 +48,15 @@ int main(int argc, char **argv) {
                 iss_destroy();
                 return 1;
             }
-            useIndex = true;
             targetIndex = (unsigned int)(parsed - 1); // convert to zero-based
+            if (iss_get_space_info(&info)) {
+                iss_switch_to_index(info, targetIndex);
+            }
         } else {
             print_usage(argv[0]);
             iss_destroy();
             return 1;
         }
-    }
-
-    bool success = false;
-    if (useIndex) {
-        success = iss_switch_to_index(targetIndex);
-    } else {
-        success = iss_switch(direction);
     }
 
     if (!success) {

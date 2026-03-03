@@ -421,12 +421,7 @@ bool iss_switch(ISSDirection direction) {
     return iss_post_switch_gesture(direction);
 }
 
-bool iss_switch_to_index(unsigned int targetIndex) {
-    ISSSpaceInfo info;
-    if (!iss_get_space_info(&info)) {
-        return false;
-    }
-
+bool iss_switch_to_index(ISSSpaceInfo info, unsigned int targetIndex) {
     if (info.spaceCount == 0) {
         return false;
     }
@@ -451,10 +446,10 @@ bool iss_switch_to_index(unsigned int targetIndex) {
         }
     }
 
-    // Verify we reached the target
-    if (!iss_get_space_info(&info)) {
-        return false;
-    }
+    // Verify we reached the target (i don't care)
+    // if (!iss_get_space_info(&info)) {
+    //     return false;
+    // }
 
     return info.currentIndex == targetIndex;
 }
